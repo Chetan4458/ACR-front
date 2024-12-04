@@ -1,12 +1,23 @@
 # utils.py
 import os
-from github import Github
+from github import Github, GithubException
 import difflib
 import re
 from docx import Document as DocxDocument
 import pdfplumber
 from pptx import Presentation
 import io
+import requests
+from requests.auth import HTTPBasicAuth
+import base64
+
+sampling_params = {
+    "temperature": 0.2,       # More deterministic responses for precision
+    "top_p": 0.9,             # Allows for diverse but coherent outputs
+    "n": 1,                   # Generate one review
+    "frequency_penalty": 0.7, # Stronger reduction of repetition
+    "presence_penalty": 0.4,  # Encourages introduction of new ideas
+}
 
 def detect_vulnerabilities(code):
     vulnerabilities = []
@@ -92,8 +103,69 @@ def calculate_severity(error_count):
             total_score += count * error_weights[error_type]
 
     return total_score
+import pandas as pd
 
+def generate_diff_dataframe(old_content, new_content):
+    # Use difflib to generate the unified diff
+    diff_lines = list(difflib.unified_diff(old_content, new_content, lineterm=''))
 
+    # Track line numbers in old and new content
+    old_line_num = 1
+    new_line_num = 1
+    diff_data = []
+
+    for line in diff_lines:
+        if line.startswith('---') or line.startswith('+++'):
+            continue  # Skip version header lines
+        elif line.startswith('@@'):
+            parts = line.split(' ')
+            old_line_num = int(parts[1].split(',')[0].replace('-', ''))
+            new_line_num = int(parts[2].split(',')[0].replace('+', ''))
+        elif line.startswith('-'):
+            # Line removed from old content
+            diff_data.append({
+                'Old Line': f'{old_line_num}: {line[1:]}',  # Strip the '-'
+                'New Line': '',
+                'Change': 'Removed'
+            })
+            old_line_num += 1
+        elif line.startswith('+'):
+            # Line added to new content
+            diff_data.append({
+                'Old Line': '',
+                'New Line': f'{new_line_num}: {line[1:]}',  # Strip the '+'
+                'Change': 'Added'
+            })
+            new_line_num += 1
+        elif line.startswith(' '):
+            # Unchanged line
+            old_line_num += 1
+            new_line_num += 1
+
+    # Create a DataFrame from the diff data
+    df_diff = pd.DataFrame(diff_data)
+
+    # Scan for matching line numbers in Old Line and New Line columns
+    for i, row in df_diff.iterrows():
+        old_line = row['Old Line'].split(':')[0] if row['Old Line'] else None
+        for j, inner_row in df_diff.iterrows():
+            new_line = inner_row['New Line'].split(':')[0] if inner_row['New Line'] else None
+            # If old line number matches new line number, combine them
+            if old_line and new_line and old_line == new_line:
+                # Combine the two rows
+                df_diff.at[i, 'New Line'] = inner_row['New Line']
+                df_diff.at[i, 'Change'] = 'Modified'
+                # Drop the row that was combined
+                df_diff.drop(j, inplace=True)
+                break  # Exit inner loop since we found a match
+
+    # Reset the index after dropping rows
+    df_diff.reset_index(drop=True, inplace=True)
+
+    # Convert DataFrame to JSON for the frontend (without styling)
+    diff_json = df_diff.to_dict(orient='records')
+
+    return diff_json
 
 
 def calculate_score(org_std_text, new_code, client, model_type):
@@ -106,7 +178,7 @@ def calculate_score(org_std_text, new_code, client, model_type):
     )
     explain_response = client.chat.completions.create(
         messages=[{"role": "user", "content": explain_prompt}],
-        model=model_type,
+        model=model_type, **sampling_params
     )
 
     explanation = explain_response.choices[0].message.content
@@ -147,23 +219,83 @@ def calculate_score(org_std_text, new_code, client, model_type):
         "message": message,
     }
 
+import git
 
 
-def process_folder(input_path):
-    # Check if input_path is GitHub URL or folder
+def process_folder_or_repo(input_path):
+    # Check if input_path is a GitHub repository URL
     if "github.com" in input_path:
-        return handle_github_repo(input_path)
+        # Clone the GitHub repository
+        repo_name = input_path.split("/")[-1].replace(".git", "")
+        if not os.path.exists(repo_name):
+            try:
+                git.Repo.clone_from(input_path, repo_name)
+            except Exception as e:
+                return [], f"Error cloning the repository: {str(e)}"
+        folder_path = repo_name
     else:
-        return handle_local_folder(input_path)
+        # Input is a local folder path
+        folder_path = input_path
+
+    # Check if the folder exists
+    if os.path.exists(folder_path):
+        code_files = []  # Initialize list to store valid code files
+
+        # Use os.walk to recursively search through subfolders and files
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                # Check if the file has one of the allowed extensions
+                if file.endswith(('.py', '.js', '.java', '.html', '.css', '.cpp')):
+                    code_files.append(os.path.join(root, file))  # Add full path of the file
+
+        if code_files:
+            return code_files, folder_path
+        else:
+            return [], "No code files found in the provided folder or repository."
+    else:
+        return [], "Provided folder path does not exist."
 
 
-def process_pull_request(token, repo_name, pr_number):
-    g = Github(token)
-    repo = g.get_repo(f"{repo_name}")
-    pull_request = repo.get_pull(pr_number)
+import traceback
+from github import Github, GithubException
 
-    # Handle the PR review logic here
-    return {'pr_details': pull_request.details(), 'files': pull_request.get_files()}
+
+def process_pull_request(token, repo_name, pull_number):
+    """
+    Fetches the pull request object from the GitHub API.
+    """
+    try:
+        # Initialize GitHub client
+        g = Github(token)
+        user = g.get_user()
+        owner = user.login  # Owner inferred from the token
+
+        # Fetch repository
+        try:
+            repo = g.get_repo(f"{owner}/{repo_name}")
+        except GithubException as ge:
+            print(f"GithubException (repo fetch): {traceback.format_exc()}")
+            raise ValueError(
+                f"Failed to fetch repository {repo_name} for user {owner}. Ensure the repository exists and is accessible.")
+
+        # Fetch pull request
+        try:
+            pull_request = repo.get_pull(int(pull_number))
+        except GithubException as ge:
+            print(f"GithubException (PR fetch): {traceback.format_exc()}")
+            raise ValueError(f"Failed to fetch PR {pull_number} from {repo_name}. Make sure the PR number is correct.")
+
+        return pull_request
+
+    except ValueError as ve:
+        print(f"ValueError: {traceback.format_exc()}")
+        raise ValueError(f"Invalid input: {ve}")
+    except GithubException as ge:
+        print(f"GithubException: {traceback.format_exc()}")
+        raise ValueError(f"GitHub API error: {ge.data.get('message', 'Unknown error')} (HTTP {ge.status})")
+    except Exception as e:
+        print(f"Unexpected error: {traceback.format_exc()}")
+        raise ValueError(f"Unexpected error: {str(e)}")
 
 
 def extract_changed_code(old_code, new_code):
@@ -301,7 +433,7 @@ def calculate_errors(code_file_content, client, model_type, lang):
         # Call the client to get error details from the model
         response = client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
-            model=model_type
+            model=model_type, **sampling_params
         )
 
         # Store the error response for this error type
@@ -328,7 +460,7 @@ def generate_suggestions(code_file_content, client, model_type):
         # Call the client to generate suggestions from the model
         suggested_response = client.chat.completions.create(
             messages=[{"role": "user", "content": suggested_prompt}],
-            model=model_type
+            model=model_type, **sampling_params
         )
         return suggested_response.choices[0].message.content
 
@@ -346,4 +478,262 @@ def get_relevant_error_types(lang):
     }
 
     return error_mapping.get(lang, [])
+from Bot.prompt import review,review_with_old
+def handle_reviews(file_content,org_standards_content,client,model_type,lang,display_path):
+    # Full review (complete review)
+    full_review = review("complete", file_content, org_standards_content, client, model_type)
+    score_data = calculate_score(org_standards_content, file_content, client, model_type)
+    score = score_data["score"]
+    score_explanation = score_data["explanation"]
+    error_tabs_data = display_error_tabs(file_content, client, org_standards_content, model_type, lang)
+
+    # Severity calculation for full review
+    total_score = calculate_severity(error_tabs_data['errors'])
+    severity_result = severity(error_tabs_data['errors'], file_content)
+    summary_review = review("summary", file_content, org_standards_content, client, model_type)
+    # Structure the full review response
+    full_review_data = {
+        "display_path": display_path,
+        "review_output": full_review,
+        "sumreview_output" : summary_review,
+        "error_output": error_tabs_data['error_tabs'],  # Errors and suggestions in tab format
+        "score": {
+            "value": score,
+            "explanation": score_explanation
+        },
+        "severity": severity_result
+    }
+
+    return full_review_data
+
+def fetch_file_content(repo, filename, ref):
+    try:
+        file_content = repo.get_contents(filename, ref=ref)
+        return file_content.decoded_content.decode('utf-8')
+    except:
+        return ""
+
+def handle_file_status(old_content_str, new_content_str):
+    flag = False  # Initialize flag at the start of the function
+    diff_json = None
+    if new_content_str and old_content_str:
+        file_status="File Modified"
+        diff_json = generate_diff_dataframe(old_content_str.splitlines(), new_content_str.splitlines())
+
+    elif not old_content_str:
+        file_status="File Added"
+
+    elif not new_content_str:
+        file_status="File Deleted"
+        flag=True
+        return file_status,diff_json,flag
+
+    return file_status,diff_json,flag
+
+
+import requests
+import base64
+from urllib.parse import urlparse
+
+def extract_ado_info_from_url(ado_url):
+    parsed_url = urlparse(ado_url)
+
+    # Check if URL is in Azure DevOps format
+    if parsed_url.netloc == 'dev.azure.com':
+        path_parts = parsed_url.path.strip('/').split('/')
+        if len(path_parts) >= 4:
+            org = path_parts[0]
+            project = path_parts[1]
+            repo_name = path_parts[3]
+            return org, project, repo_name
+    return None, None, None
+
+
+# Process the Azure DevOps repository
+# Define the allowed file extensions
+ALLOWED_EXTENSIONS = {'.py', '.js', '.html', '.cpp', '.css', '.java'}
+def process_ado_repo(pat, organization, project, repo_name):
+    ado_base_url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo_name}/items"
+    headers = {
+        'Authorization': f'Basic {base64.b64encode(f":{pat}".encode()).decode()}',
+    }
+
+    # Get the list of files from the repo (this will fetch the root directory by default)
+    params = {
+        "scopePath": "/",  # Adjust this to fetch files from the root folder
+        "recursionLevel": "Full",  # Recursively get all files in the repository
+        "includeContentMetadata": "true",
+        "api-version": "6.0"  # API version for Azure DevOps
+    }
+
+    response = requests.get(ado_base_url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        files_data = response.json().get('value', [])
+        file_paths = [file['path'] for file in files_data if not file.get('isFolder', False) and os.path.splitext(file['path'])[1] in ALLOWED_EXTENSIONS]
+        return file_paths
+    else:
+        raise Exception(
+            f"Failed to fetch files from Azure DevOps repository. Error: {response.status_code}, {response.text}")
+
+
+def get_authenticated_user_email(ado_pat):
+    """
+    Fetch the email address of the authenticated user using the Azure DevOps PAT.
+    """
+    url = "https://app.vssps.visualstudio.com/_apis/profile/profiles/me?api-version=6.0"
+    headers = {
+        "Authorization": f"Basic {base64.b64encode(f':{ado_pat}'.encode()).decode()}",
+        "Content-Type": "application/json"
+    }
+
+    print(f"Making request to: {url}")
+    print(f"Authorization Header: {headers['Authorization'][:10]}... (truncated)")
+
+    response = requests.get(url, headers=headers)
+
+    print(f"Response Status Code: {response.status_code}")
+    print(f"Response Content: {response.text}")
+
+    if response.status_code == 401:
+        raise Exception("Unauthorized: Ensure your PAT has 'Profile (Read)' scope and is encoded correctly.")
+    elif response.status_code != 200:
+        raise Exception(f"Failed to fetch user profile: {response.status_code} {response.text}")
+
+    user_data = response.json()
+    email = user_data.get('emailAddress')
+    if not email:
+        raise Exception("Email address not found in user profile data.")
+
+    return email
+
+
+
+def get_reviewer_id(pat, organization, project, repo, pr_number,unique_name):
+    """Fetch the reviewers for a pull request."""
+    api_url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo}/pullRequests/{pr_number}/reviewers?api-version=6.0"
+    
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    # Make the GET request
+    response = requests.get(api_url, headers=headers, auth=HTTPBasicAuth('', pat))
+
+    if response.status_code == 200:
+        reviewers = response.json()['value']
+        for reviewer in reviewers:
+            if reviewer['uniqueName'].lower() == unique_name.lower():
+                return reviewer['id']
+        
+    else:
+        print(f"Failed to fetch reviewers. Status code: {response.status_code}, Response: {response.text}")
+        return None
+def add_pr_comment(pat, organization, project, repo, pr_number, comment):
+    """Add a comment to a pull request."""
+    api_url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo}/pullRequests/{pr_number}/threads?api-version=6.0"
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Basic {base64.b64encode(f":{pat}".encode()).decode()}'
+    }
+
+    payload = {
+        "comments": [
+            {
+                "content": comment,
+                "commentType": 1  # Regular comment
+            }
+        ],
+        "status": "active"
+    }
+
+    response = requests.post(api_url, json=payload, headers=headers)
+
+    if response.status_code not in [200, 201]:
+        raise Exception(f"Failed to add comment to PR #{pr_number}. Status code: {response.status_code}, Response: {response.text}")
+
+def update_pr_vote(pat, organization, project, repo, pr_number, reviewer_id, status):
+    """Update the vote for a pull request."""
+    api_url = f"https://dev.azure.com/{organization}/{project}/_apis/git/repositories/{repo}/pullRequests/{pr_number}/reviewers/{reviewer_id}?api-version=6.0"
+    
+    headers = {
+        'Content-Type': 'application/json'
+    }
+
+    # Vote: 10 for approve, -10 for reject
+    vote = 10 if status.lower() == 'approve' else -10 if status.lower() == 'reject' else 0
+
+    payload = {"vote": vote}
+
+    # Make the PUT request
+    response = requests.put(api_url, json=payload, headers=headers, auth=HTTPBasicAuth('', pat))
+
+    if response.status_code in [200, 204]:
+        print(f"PR #{pr_number} has been {status}d successfully.")
+    else:
+        print(f"Failed to {status} PR #{pr_number}. Status code: {response.status_code}, Response: {response.text}")
+
+
+def complete_pull_request(pr_number, ado_url, ado_pat):
+    """
+    Complete (merge) a pull request in Azure DevOps after ensuring all required reviewers have approved it.
+    """
+    import base64
+    import requests
+    
+    # Ensure correct API endpoint
+    api_url = ado_url.replace('_git', '_apis/git/repositories')
+    url = f"{api_url}/pullRequests/{pr_number}?api-version=6.0"
+
+    # Headers with PAT
+    headers = {
+        "Authorization": f"Basic {base64.b64encode(f':{ado_pat}'.encode()).decode()}",
+        "Content-Type": "application/json"
+    }
+
+    # Fetch the PR details
+    pr_response = requests.get(url, headers=headers)
+    if pr_response.status_code != 200:
+        raise Exception(f"Failed to fetch PR details: {pr_response.text}")
+
+    pr_data = pr_response.json()
+
+    # Check if all required reviewers have approved
+    reviewers = pr_data.get("reviewers", [])
+    required_approvals = [
+        reviewer for reviewer in reviewers if reviewer.get("isRequired")
+    ]
+    not_approved = [
+        reviewer["displayName"]
+        for reviewer in required_approvals
+        if reviewer.get("vote") != 10  # 10 indicates approval
+    ]
+
+    if not_approved:
+        raise Exception(
+            f"PR cannot be completed. The following required reviewers have not approved:\n" + " ;\n".join(f"{reviewer}" for reviewer in not_approved)
+        )
+
+
+
+    # Fetch the latest commit ID
+    last_commit_id = pr_data.get("lastMergeSourceCommit", {}).get("commitId")
+    if not last_commit_id:
+        raise Exception("Last merge source commit ID not found.")
+
+    # Prepare payload to complete the PR
+    payload = {
+        "status": "completed",
+        "lastMergeSourceCommit": {"commitId": last_commit_id}
+    }
+
+    # Complete the PR
+    response = requests.patch(url, json=payload, headers=headers)
+    if response.status_code not in [200, 204]:
+        raise Exception(f"Failed to complete PR #{pr_number}: {response.text}")
+
+    return True
+
+
 

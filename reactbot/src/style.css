@@ -1,0 +1,485 @@
+.acr {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    transition: margin-left 0.3s ease; /* Smooth adjustment when the sidebar is shown */
+}
+
+.sidebar {
+    width: 0; /* Sidebar is initially hidden */
+    overflow: hidden; /* Prevent content overflow when hidden */
+    background-color: whitesmoke;
+    color: #24135f;
+    height: 100vh; /* Full height of the viewport */
+    position: fixed;
+    top: 70px;
+    left: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: width 0.3s ease; /* Smoothly reveal or hide the sidebar */
+}
+
+.sidebar.visible {
+    width: 230px; /* Sidebar width when visible */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding-top: 10px;
+}
+
+.sidebar ul li {
+    padding: 10px 0;
+    font-weight: 550;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+}
+
+.sidebar ul li:hover {
+    background-color: #24135f;
+    transform: scale(1.05);
+    color: #ecf0f1;
+}
+
+.review-container {
+    margin-top:92px;
+    margin-left: 0; /* Default: takes up the full width */
+    flex: 1;
+    font-family: "Georgia", Times, serif;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
+    justify-content: center;
+    transition: margin-left 0.3s ease; /* Smooth adjustment when the sidebar is shown */
+}
+
+.review-container.sidebar-active {
+    margin-left: 230px; /* Adjust based on sidebar width */
+}
+
+
+
+
+.review-container h1 {
+    text-align: center;
+    font-size: 34px;
+    color: #24135f;
+    
+    font-weight: bolder;
+    margin-top: 7px;
+}
+.review-container h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: black;
+    margin:auto
+}
+
+.form-container {
+    margin:20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Increase spacing between items */
+    width: 100%; /* Adjust width to make it responsive */
+    max-width: 100%; /* Limit the max width for a better card size */
+    padding: 25px; /* Slightly reduced padding for a balanced look */
+    background-color: #ffffff; /* Clean white background */
+    border-radius: 15px; /* Rounded corners for a card-like feel */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Softer, modern shadow */
+    align-items: center; /* Center content horizontally */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+
+
+.select-container{
+    margin-top: 10px;
+}
+.file-upload ,.select-container,.select-container:hover{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 15px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.6s ease;
+    min-width: 250px;
+    margin: 6px;
+}
+
+.file-upload-wrapper,
+.textbox {
+    margin-bottom: 15x;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    /* width: 100%; */
+    cursor: pointer;
+    /* max-width: 1200px; */
+    /* margin: 0 auto; */
+}
+.textbox{
+    min-width: 50pc;
+}
+.file-upload-wrapper{
+    min-width: 250px;
+}
+/* Responsiveness */
+@media screen and (max-width: 768px) {
+    .file-upload-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .textbox {
+        padding: 20px 15px;
+    }
+
+    .textbox input {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
+
+/* Input Styling */
+.textbox,
+.file-upload input[type="file"],
+.textbox input,
+.select-container select {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    color: black;
+    background-color: #fff;
+    outline: none;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+
+.textbox input::placeholder,
+.file-upload input[type="file"]::placeholder {
+    color: #bbb;
+    font-style: italic;
+}
+
+/* Focus Effects */
+.textbox input:focus,
+.file-upload input:focus,
+.select-container select:focus {
+    border-color: #24135f;
+    box-shadow: 0 0 8px rgba(78, 118, 227, 0.3);
+}
+
+.file-upload:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.select-container select option:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button Styles */
+.expand-button,
+.review-type-button {
+    background-color: #24135f;
+    color: white;
+    padding: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 20px;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.expand-button:hover,
+.review-type-button:hover {
+    background-color: #004080;
+    transform: scale(1.03);
+}
+
+.expand-button:focus,
+.review-type-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(13, 97, 160, 0.7);
+}
+
+/* Review Section */
+.review-buttons {
+    display: flex;
+    gap: 20px;                      /* Space between buttons */
+    justify-content: center;        /* Center buttons horizontally */
+    margin-top: 20px;
+    width: auto;                    /* Let the container size itself based on the buttons */
+    max-width: 100%;                 /* Prevent overflow from parent */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-left: auto;              /* Center the container */
+    margin-right: auto;             /* Center the container */
+    flex-wrap: nowrap;              /* Prevent wrapping of buttons */
+}
+
+.review-type-button {
+    padding: 12px 20px;
+    background-color: #24135f;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0;                 /* Prevent button shrinkage */
+    white-space: nowrap;            /* Prevent text wrapping inside the button */
+}
+
+.review-type-button:hover {
+    background-color: #004080;
+    transform: scale(1.03);
+}
+
+/* Error Message Styling */
+.text-danger,
+.error-message {
+    color: #e74c3c;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Tabs Section */
+.tabs-section {
+    padding: 5px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    justify-content: center;
+    margin-bottom: 5px;
+    overflow-x: auto;
+}
+
+.tab-button {
+    background-color: #24135f;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    color: black;
+    border-radius: 20px;
+    margin: 0 10px;
+    margin-bottom:10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.tab-button.active {
+    background-color: #24135f;
+    color: white;
+}
+
+.tab-button:hover {
+    background-color: #004080;
+    transform: scale(1.1);
+    
+}
+
+.tab-button:not(.active) {
+    background-color: rgba(230, 226, 226, 0.989);
+}
+
+.tab-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 78, 151, 0.7);
+}
+
+/* Content Section */
+.review-result-container,
+.tab-content {
+    background-color: white;
+    /* padding: 10px; */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    /* margin-top: 10px; */
+    width:100%;
+    border-radius: 15px;
+}
+
+.tab-content h3 {
+    font-size: 20px;
+    font-weight: bold;
+    /* margin-bottom: 15px; */
+    color: #24135f;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 5px;
+}
+
+.tab-content pre {
+    font-family: "Georgia", Times, serif;
+    font-size: 15px;
+    color: black;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: #fff;
+    padding: 5px;
+    
+}
+
+.tab-content pre strong {
+    font-weight: bold;
+    color: #000;
+}
+
+.tab-content ul li {
+    font-size: 15px;
+    margin-left: 30px;
+    color: black;
+}
+
+.tab-content ul li::marker {
+    color: #0056b3;
+}
+
+/* Score and Severity */
+.score-container,
+.score-content {
+    background-color: white;
+    padding: 10px;
+    margin-left:10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin-top: 20px; */
+}
+
+.score-content {
+    border: 2px solid #0056b3;
+}
+
+.score,
+.score-value {
+    font-weight: bold;
+    color: black;
+}
+
+.score-value {
+    font-size: 22px;
+    color: #0056b3;
+}
+
+.score-ten {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.severity {
+    /* margin-top: 20px; */
+    padding: 10px;
+    margin-left: 10px;
+    margin-bottom:5px;
+    /* border: 1px solid #ffffff; */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+
+    border-radius: 15px;
+    background-color: white;
+}
+
+.severity p {
+    padding:5px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FF5722;
+}
+
+.severity p strong {
+    color: black;
+}
+
+.vulnerabilities ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.vulnerabilities ul li {
+    font-size: 16px;
+    color: black;
+}
+
+.no-vulnerabilities {
+    font-size: 16px;
+    font-weight: bold;
+    color: green;
+}
+
+.full-review {
+    background-color: #fafafa;
+    /* padding: 10px; */
+    padding-left: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin-top: 20px; */
+}
+
+.full-review pre {
+    background-color: #fff;
+    font-family: "Georgia", Times, serif;
+    font-size: 15px;
+    color: black;
+}
+
+.full-review pre strong {
+    font-weight: bold;
+    color: #000;
+}
+/* Table for Code Diff */
+.table-container {
+    font-family: "Georgia", Times, serif;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table thead th {
+    background-color: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid white;
+}
+
+table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid white;
+}
+
+.diff-added {
+    background-color: lightgreen;
+  }
+  
+  .diff-removed {
+    background-color: lightcoral;
+  }
+  
+  .diff-modified {
+    background-color: lightblue;
+  }
+ 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test HTML Validation Errors</title>
+</head>
+<body>
+    <h1>Welcome to My Page</h1>
+    
+    <!-- Missing closing tag for <p> -->
+    <p>This is a paragraph without a closing tag.
+
+    <!-- Invalid attribute: <img> should have alt attribute -->
+    <img src="image.jpg" width="500" height="400">
+
+    <!-- Invalid nesting: <li> should be inside <ul> or <ol> -->
+    <li>This list item is not nested properly.</li>
+
+    <!-- <form> without action attribute -->
+    <form>
+        <input type="text" name="name" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Unclosed <div> -->
+    <div>
+        <p>This is another paragraph.</p>
+</body>
+</html>

@@ -1,0 +1,701 @@
+.acr {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    transition: margin-left 0.3s ease; /* Smooth adjustment when the sidebar is shown */
+}
+
+.sidebar {
+    width: 0; /* Sidebar is initially hidden */
+    overflow: hidden; /* Prevent content overflow when hidden */
+    background-color: whitesmoke;
+    color: #24135f;
+    height: 100vh; /* Full height of the viewport */
+    position: fixed;
+    top: 90px;
+    left: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: width 0.6s ease; /* Smoothly reveal or hide the sidebar */
+}
+
+.sidebar.visible {
+    width: 300px; /* Sidebar width when visible */
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding-top: 10px;
+}
+
+.sidebar ul li {
+    padding: 10px 0;
+    font-weight: 550;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    text-align: center;
+    border-bottom: 2px solid #d6d6d6;
+    box-shadow: inset 0 -2px 20px rgba(0, 0, 0, 0.1);
+}
+
+
+.sidebar ul li:hover {
+    background-color: #24135f;
+    transform: scale(1.05);
+    color: #ecf0f1;
+}
+/* Sidebar Styling */
+/* Sidebar Container */
+.sidebar-pr {
+    width: 0;
+    background: linear-gradient(180deg, #ffffff, #f2f3f7); /* Subtle gradient */
+    color: #24135f;
+    height: 100vh;
+    position: fixed;
+    top: 90px;
+    left: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Softer shadow for a sleek look */
+    transition: width 0.6s ease;
+    padding: 20px; /* Generous padding for a clean layout */
+    box-sizing: border-box;
+    border-right: 1px solid #d6d6d6; /* Light divider for contrast */
+    z-index: 100;
+}
+.sidebar-pr.visible {
+    width: 300px; /* Sidebar width when visible */
+}
+
+/* Sidebar Header */
+.sidebar-pr h2 {
+    font-size: 1.6rem;
+    color: #24135f;
+    margin-bottom: 20px;
+    font-weight: 700;
+    border-bottom: 2px solid #d6d6d6; /* Cleaner divider */
+    box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+    padding-bottom: 10px;
+    text-transform: uppercase; /* Professional touch with uppercase */
+    letter-spacing: 0.5px;
+}
+
+/* PR Items */
+.pr-item {
+    list-style-type: none;
+    margin-bottom: 20px; /* Spacious separation */
+}
+
+/* PR Title Styling */
+.pr-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #333;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px; /* Larger padding for comfortable interaction */
+    border-radius: 8px; /* Rounded edges for a modern touch */
+    background-color: #ffffff; /* Card-like background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pr-title:hover {
+    background-color: #eceffd; /* Softer highlight */
+    color: #4a5bdc; /* Eye-catching hover color */
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Stronger shadow on hover */
+}
+
+/* Caret Icon Styling (for toggle arrow) */
+.pr-title::before {
+    content: "▶"; /* Default closed state */
+    margin-right: 10px;
+    transform: rotate(0deg);
+    transition: transform 0.3s ease, color 0.3s ease;
+    font-size: 1.2rem; /* Subtle size for icon */
+    color: #4a5bdc;
+}
+
+.pr-item[aria-expanded="true"] .pr-title::before {
+    content: "▼"; /* Expanded state */
+    transform: rotate(180deg); /* Rotate the caret icon */
+}
+
+/* File List Styling */
+.file-list {
+    list-style-type: none;
+    padding-left: 20px;
+    margin-top: 10px;
+    display: none; /* Hide file list by default */
+    transition: all 0.3s ease; /* Smooth transition when showing/hiding */
+    border-left: 2px solid #d6d6d6; /* Subtle border for alignment */
+    margin-left: 8px; /* Additional spacing */
+}
+
+/* Make file list visible when PR is expanded */
+.pr-item[aria-expanded="true"] .file-list {
+    display: block;
+}
+
+/* File Item Styling */
+.file-item {
+    font-size: 1.1rem;
+    color: black;
+    padding: 8px 0;
+    transition: color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.file-item:hover {
+    color: #24135f; /* Brighter highlight color */
+    background-color: rgba(245, 245, 245, 0.32);
+    text-decoration:solid; /* Underline on hover for clarity */
+    transform: translateX(5px); /* Subtle slide-in effect */
+}
+
+/* Active File Styling */
+.file-item.active {
+    font-weight: 600; /* Emphasize active file */
+    color: #4a5bdc;
+}
+
+/* Scrollbar Styling */
+.sidebar-pr {
+    overflow-y: auto; /* Enable scrolling for long content */
+}
+
+.sidebar-pr::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar-pr::-webkit-scrollbar-thumb {
+    background: #c0c5d8; /* Subtle scrollbar thumb */
+    border-radius: 4px;
+}
+
+.sidebar-pr::-webkit-scrollbar-thumb:hover {
+    background: #929bb7; /* Darker thumb on hover */
+}
+
+.sidebar-pr::-webkit-scrollbar-track {
+    background: #f4f5fa; /* Track color matching the background */
+}
+
+
+
+.review-container {
+    margin-top:92px;
+    margin-left: 0; /* Default: takes up the full width */
+    flex: 1;
+    font-family:Arial, Helvetica, sans-serif;
+    padding: 20px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 15px;
+    justify-content: center;
+    transition: margin-left 0.3s ease; /* Smooth adjustment when the sidebar is shown */
+}
+
+.review-container.sidebar-active {
+    margin-left: 300px; /* Adjust based on sidebar width */
+}
+
+.review-container.sidebar-pr-active {
+    margin-left: 300px; /* Adjust based on sidebar width */
+}
+
+
+
+.review-container h1 {
+    text-align: center;
+    font-size: 34px;
+    color: #24135f;
+    
+    font-weight: bolder;
+    margin-top: 7px;
+}
+.review-container h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: black;
+    margin:auto
+}
+
+.form-container {
+    margin:20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Increase spacing between items */
+    width: 100%; /* Adjust width to make it responsive */
+    max-width: 100%; /* Limit the max width for a better card size */
+    padding: 25px; /* Slightly reduced padding for a balanced look */
+    background-color: #ffffff; /* Clean white background */
+    border-radius: 15px; /* Rounded corners for a card-like feel */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* Softer, modern shadow */
+    align-items: center; /* Center content horizontally */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover effect */
+}
+
+
+
+.select-container{
+    margin-top: 10px;
+}
+.file-upload ,.select-container,.select-container:hover{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 15px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.6s ease;
+    min-width: 250px;
+    margin: 6px;
+}
+
+.file-upload-wrapper,
+.textbox {
+    margin-bottom: 15x;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 20px;
+    /* width: 100%; */
+    cursor:auto;
+    /* max-width: 1200px; */
+    /* margin: 0 auto; */
+}
+.textbox label{
+    min-width: fit-content;
+}
+.textbox{
+    min-width: 40pc;
+}
+.file-upload-wrapper{
+    min-width: 250px;
+}
+/* Responsiveness */
+@media screen and (max-width: 768px) {
+    .file-upload-wrapper {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .textbox {
+        padding: 20px 15px;
+    }
+
+    .textbox input {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+}
+
+/* Input Styling */
+.textbox,
+.file-upload input[type="file"],
+.textbox input,
+.select-container select {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 20px;
+    color: black;
+    background-color: #fff;
+    outline: none;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+}
+.pr-actions {
+    display: flex;
+    flex-wrap: wrap; /* Allows buttons to wrap when the container is too narrow */
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    margin-top: 20px;
+    width: 100%; /* Ensure the actions take the full width of the container */
+    /* box-sizing: border-box; */
+  }
+.textbox input::placeholder,
+.file-upload input[type="file"]::placeholder {
+    color: #bbb;
+    font-style: italic;
+}
+
+/* Focus Effects */
+.textbox input:focus,
+.file-upload input:focus,
+.select-container select:focus {
+    border-color: #24135f;
+    box-shadow: 0 0 8px rgba(78, 118, 227, 0.3);
+}
+
+.file-upload:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.select-container select option:hover {
+    background-color: #f1f1f1;
+}
+
+/* Button Styles */
+.expand-button,
+.review-type-button {
+    background-color: #24135f;
+    color: white;
+    padding: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 20px;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.expand-button:hover,
+.review-type-button:hover {
+    background-color: #004080;
+    transform: scale(1.03);
+}
+
+.expand-button:focus,
+.review-type-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(13, 97, 160, 0.7);
+}
+
+/* Review Section */
+.review-buttons {
+    display: flex;
+    gap: 20px;                      /* Space between buttons */
+    justify-content: center;        /* Center buttons horizontally */
+    margin-top: 20px;
+    width: auto;                    /* Let the container size itself based on the buttons */
+    max-width: 100%;                 /* Prevent overflow from parent */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-left: auto;              /* Center the container */
+    margin-right: auto;             /* Center the container */
+    flex-wrap: nowrap;              /* Prevent wrapping of buttons */
+}
+
+.review-type-button {
+    padding: 12px 20px;
+    background-color: #24135f;
+    color: white;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0;                 /* Prevent button shrinkage */
+    white-space: nowrap;            /* Prevent text wrapping inside the button */
+}
+
+.review-type-button:hover {
+    background-color: #004080;
+    transform: scale(1.03);
+}
+
+/* Error Message Styling */
+.text-danger,
+.error-message {
+    color: #e74c3c;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+/* Tabs Section */
+.tabs-section {
+    padding: 5px;
+    background-color: white;
+    border-radius: 20px;
+}
+
+.tabs {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent buttons from wrapping to a new line */
+    padding-top: 10px;
+    justify-content: flex-start; /* Align buttons to the left */
+    margin-bottom: 5px;
+    overflow-x: auto;  /* Enable horizontal scrolling */
+    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.tabs::-webkit-scrollbar {
+    display: none;  /* Hide scrollbar in WebKit browsers (Chrome, Safari, etc.) */
+}
+
+.tab-button {
+    background-color: #24135f;
+    border: none;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 600;
+    color: black;
+    border-radius: 20px;
+    margin: 0 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0; /* Prevent button from shrinking */
+}
+
+
+.tab-button.active {
+    background-color: #24135f;
+    color: white;
+}
+
+.tab-button:hover {
+    background-color: #004080;
+    transform: scale(1.1);
+    
+}
+
+.tab-button:not(.active) {
+    background-color: rgba(230, 226, 226, 0.989);
+}
+
+.tab-button:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(26, 78, 151, 0.7);
+}
+
+/* Content Section */
+.review-result-container,
+.tab-content {
+    background-color: white;
+    /* padding: 10px; */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    /* margin-top: 10px; */
+    width:100%;
+    border-radius: 15px;
+}
+
+.tab-content h3 {
+    font-size: 20px;
+    font-weight: bold;
+    /* margin-bottom: 15px; */
+    color: #24135f;
+    border-bottom: 2px solid #0056b3;
+    box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+    padding-bottom: 5px;
+}
+
+.tab-content pre {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: black;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: white;
+    padding: 5px;
+    margin-top: 10px;
+    
+}
+
+.tab-content pre strong {
+    font-weight: bold;
+    color: #000;
+}
+
+.tab-content ul li {
+    font-size: 15px;
+    margin-left: 30px;
+    color: black;
+}
+
+.tab-content ul li::marker {
+    color: #0056b3;
+}
+
+/* Score and Severity */
+.score-container,
+.score-content {
+    background-color: white;
+    padding: 10px;
+    margin-left:10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin-top: 20px; */
+}
+
+.score-content {
+    border: 2px solid #0056b3;
+}
+
+.score,
+.score-value {
+    font-weight: bold;
+    color: black;
+}
+
+.score-value {
+    font-size: 22px;
+    color: #0056b3;
+}
+
+.score-ten {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+.severity {
+    /* margin-top: 20px; */
+    padding: 10px;
+    margin-left: 10px;
+    margin-bottom:5px;
+    /* border: 1px solid #ffffff; */
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+
+    border-radius: 15px;
+    background-color: white;
+}
+
+.severity p {
+    padding:5px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FF5722;
+}
+
+.severity p strong {
+    color: black;
+}
+
+.vulnerabilities ul {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.vulnerabilities ul li {
+    font-size: 16px;
+    color: black;
+}
+
+.no-vulnerabilities {
+    font-size: 16px;
+    font-weight: bold;
+    color: green;
+}
+
+.full-review {
+    background-color: white;
+    /* padding: 10px; */
+    padding-left: 10px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* margin-top: 20px; */
+}
+
+.full-review pre {
+    background-color: white;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    color: black;
+}
+
+.full-review pre strong {
+    font-weight: bold;
+    color: black;
+}
+/* Table for Code Diff */
+.table-container {
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table thead th {
+    background-color: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: black;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid white;
+}
+
+table tbody td {
+    padding: 10px;
+    border-bottom: 1px solid white;
+}
+
+.diff-added {
+    background-color: lightgreen;
+  }
+  
+  .diff-removed {
+    background-color: lightcoral;
+  }
+  
+  .diff-modified {
+    background-color: lightblue;
+  }
+ 
+
+  /* Styling for the tab list container */
+.tab-list-container {
+    background-color: #f9f9f9; /* Light background color for the tab list */
+    border-radius: 5px; /* Rounded corners for the tab list */
+    padding: 10px; /* Padding around the tab list */
+    /* margin-top: 10px; Space between file name and the tab list */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  }
+  
+  /* Styling for the individual tab items */
+  .tab-list-container ul {
+    list-style-type: none; /* Remove bullets */
+    padding: 0; /* Remove any default padding */
+    margin: 0; /* Remove any default margin */
+  }
+  
+  .tab-list-container li {
+    font-size: 1rem; /* Make the text size consistent */
+    color: #24135f; /* Dark text color */
+    cursor: pointer; /* Indicate clickable items */
+    padding: 5px 10px; /* Padding inside each tab item */
+    /* margin: 5px 0; Space between each tab item */
+    border-bottom: 2px solid #d6d6d6;
+    box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 4px; /* Rounded corners for each tab item */
+    transition: background-color 0.2s ease, color 0.2s ease; /* Smooth transitions */
+  }
+  
+  /* Hover effect for the tab items */
+  .tab-list-container li:hover {
+    background-color: #24135f; /* Dark background on hover */
+    color: whitesmoke; /* White text on hover */
+  }
+  
+  /* Styling for the active tab */
+  .tab-list-container li.active {
+    background-color: #24135f; /* Active tab background color */
+    color: whitesmoke; /* Active tab text color */
+    font-weight: bold; /* Bold text for active tab */
+  }
+  
+  /* Adjust the tab list container if the file is not selected (make it hidden) */
+  .tab-list-container.hidden {
+    display: none;
+  }
+  

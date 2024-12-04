@@ -1,38 +1,131 @@
+/* General reset for margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.5;
+
+}
+
+/* App Container */
 .App {
-  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  /* padding: 20px; */
+  background-color: white;
+  /* min-height: 100vh; */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Navbar styles */
+.navbar {
   display: flex;
-  flex-direction: column;
+  position:fixed;
+  justify-content: start;
   align-items: center;
+  width:100%;
+  top:0;
+  left:0;
+  height: 90px;
+  padding: 15px 40px;
+  background-color: #24135f;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+
+  /* border: 4px solid #1d4ed8; */
+}
+
+/* Logo styling */
+.navbar .logo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.navbar .logo img {
+  height: 70px;
+  width: auto;
+}
+
+/* Navbar title styling (centered) */
+.navbar-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.navbar-title h1 {
+  font-size: 40px;
+  color: #fff;
+  font-weight: bolder;
+}
+
+/* Navigation links container */
+.nav-links {
+  display: flex;
+  align-items: center; /* Align vertically */
+  margin-left: 70px;
+}
+
+.nav-links ul {
+  display: flex;
+  gap: 5px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Navigation links */
+.nav-links a {
+  display: inline-flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: center;
+  padding: 12px 12px;
+  background-color: #24135f;
   color: white;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  height: 50px; /* Set a fixed height for uniform size */
+  transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
 }
 
-.App-link {
-  color: #61dafb;
+.nav-links a:hover {
+  background-color: #24135f;
+  border-color: #24135f;
+  transform: scale(1.08);
+  text-decoration: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.nav-links a.active {
+  background-color: #24135f;
+  border-color: #24135f;
+}
+
+/* Home content section */
+.home-content {
+  padding: 50px 30px;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 150px auto;
+}
+
+.home-content h1 {
+  font-size: 3rem;
+  color: #24135f;
+  margin-bottom: 25px;
+  font-weight: 700;
+}
+
+.home-content p {
+  font-size: 1.2rem;
+  color: #444;
+  line-height: 1.8;
+  margin-bottom: 15px;
 }
