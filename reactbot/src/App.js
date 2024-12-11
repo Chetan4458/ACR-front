@@ -10,7 +10,7 @@ import axios from "axios";
  
 import './App.css';
  
-axios.defaults.baseURL = 'https://acr-back-automated-code-review.apps.opendev.hq.globalcashaccess.us';
+axios.defaults.baseURL = 'https://acr-back-code-review.apps.opendev.hq.globalcashaccess.us';
 axios.defaults.withCredentials = true;
  
 const App = () => {
