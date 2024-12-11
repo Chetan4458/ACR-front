@@ -187,9 +187,11 @@ const App = () => {
               )}
  
                
-                {(isLoggedIn || adoisLoggedIn) && (
+                 {(isLoggedIn || adoisLoggedIn) && (
+                <div className="home-content">
+                <p>Please upload Organization standards to proceed.</p>
                 <div className="file-upload-wrapper">
-                  <p>Please upload Organization standards to proceed.</p><br/>
+                 
                   <div className="file-upload">
                   
                     <label htmlFor="orgStdFile">Organization Code Standard:</label>
@@ -201,6 +203,7 @@ const App = () => {
                       required
                     />
                   </div>
+                </div>
                 </div>
                 )}
                 {errorMessage && (
