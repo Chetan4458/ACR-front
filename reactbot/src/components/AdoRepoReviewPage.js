@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from "react";
 import axios from "axios";
 import "./style.css";
-import DiffViewer from "react-diff-viewer";
 import ErrorTabs from './ErrorTabs';
 
 axios.defaults.withCredentials = true;
@@ -247,16 +246,6 @@ const AdoRepoReview = ({ orgFile,adoauthcode }) => {
         {/* Form Section */}
         <form onSubmit={handleSubmit} className="pr-form">
           <div className="form-container">
-          <div className="textbox">
-          <label>ADO PAT:</label>
-          <input
-            type="password"
-            value={pat}
-            onChange={(e) => setpat(e.target.value)}
-            placeholder="Enter PAT"
-            required
-          />
-          </div>
           <div className="textbox">
           <label>ADO Repo URL:</label>
           <input
