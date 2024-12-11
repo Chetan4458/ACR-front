@@ -210,7 +210,9 @@ const AdoRepoReview = ({ orgFile,adoauthcode }) => {
     formData.append("org_file", orgFile);
 
     try {
-      const response = await axios.post("/api/review/ado-repo/", formData);
+      const response = await axios.post("/api/review/ado-repo/", formData,{
+  timeout: 0, // Disable timeout (wait indefinitely)
+});
       if (response.data && Array.isArray(response.data.reviews_data)) {
         setReviewResults(response.data.reviews_data);
       } else {
