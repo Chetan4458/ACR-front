@@ -189,7 +189,7 @@ const App = () => {
                
                 {(isLoggedIn || adoisLoggedIn) && (
                 <div className="file-upload-wrapper">
-                  <p>Please upload Organization standards to proceed.</p>
+                  <p>Please upload Organization standards to proceed.</p><br/>
                   <div className="file-upload">
                   
                     <label htmlFor="orgStdFile">Organization Code Standard:</label>
