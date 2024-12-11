@@ -55,18 +55,18 @@ const App = () => {
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     const ado_code= new URLSearchParams(window.location.search).get("code");
+    const state=new URLSearchParams(window.location.search).get("state")
     if (code) {
       setauthcode(code);
       setIsLoggedIn(true); // User is logged in
       // setSuccessMessage("You have successfully logged in with GitHub!"); // Set success message
     }
-    if (ado_code) {
+    if (ado_code && state) {
       setadoauthcode(ado_code);
       setadoIsLoggedIn(true); // User is logged in
       // setSuccessMessage("You have successfully logged in with GitHub!"); // Set success message
     }
   }, []);
-
  
   const handleOrgStdFileChange = (e) => {
     const file = e.target.files[0];
@@ -187,7 +187,7 @@ const App = () => {
               )}
  
                
-                {isLoggedIn || adoisLoggedIn && (
+                {(isLoggedIn || adoisLoggedIn) && (
                 <div className="file-upload-wrapper">
                   <p>Please upload Organization standards to proceed.</p>
                   <div className="file-upload">
