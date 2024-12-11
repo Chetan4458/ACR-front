@@ -24,7 +24,7 @@ const App = () => {
  
   const handleGitHubLoginClick = () => {
     const clientId = "Ov23liAoWBA8cFwLh4ds"; // Replace with your GitHub App's client ID
-    const redirectUri = "https://acr-front-automated-code-review.apps.opendev.hq.globalcashaccess.us/"; // Replace with your React app's URL
+    const redirectUri = "https://acr-front-code-review.apps.opendev.hq.globalcashaccess.us/"; // Replace with your React app's URL
     const scope = "repo"; // Adjust the scope as needed
  
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
@@ -34,7 +34,7 @@ const App = () => {
  
   const handleADOLoginClick = () => {
     const ado_client_id = "149E63CA-5872-49CD-915A-BB581125EEFB"; // Replace with your ADO App's client ID
-    const ado_redirect_uri = "https://acr-front-automated-code-review.apps.opendev.hq.globalcashaccess.us/"; // Replace with your React app's URL
+    const ado_redirect_uri = "https://acr-front-code-review.apps.opendev.hq.globalcashaccess.us/"; // Replace with your React app's URL
     const ado_scope = "vso.build_execute vso.code_full vso.code_status vso.githubconnections_manage vso.identity_manage vso.pipelineresources_use vso.project_manage vso.threads_full vso.tokenadministration vso.work_full";
     const state = "random_string_for_csrf_protection";
     const auth_url = "https://app.vssps.visualstudio.com/oauth2/authorize";
