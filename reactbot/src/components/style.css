@@ -698,4 +698,10 @@ table tbody td {
   .tab-list-container.hidden {
     display: none;
   }
+  .github-icon {
+    width: 20px;  /* Adjust the size as needed */
+    height: 20px;
+    
+    margin-left: 10px;  /* Space between the icon and the text */
+  }
   

@@ -71,6 +71,7 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Allow requests from your React frontend
 ]
+CSRF_COOKIE_SECURE = False  # Set to True if you're using HTTPS in production
 
 CSRF_COOKIE_HTTPONLY = False  # Allow access to CSRF cookie from JavaScript (if required)
 # CSRF settings for cross-origin requests

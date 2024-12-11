@@ -15,13 +15,11 @@ from groq import Groq
 
 client = Groq(api_key=groq_api_key)
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
 from github import Github
 from urllib.parse import urlparse
 from rest_framework.response import Response
-
+GITHUB_CLIENT_ID = "Ov23liAoWBA8cFwLh4ds"
+GITHUB_CLIENT_SECRET = "97bba278b113c6d649b591b6b30483146b9b274f"
 
 @api_view(['POST'])
 def handle_pr_operations(request):
@@ -30,10 +28,37 @@ def handle_pr_operations(request):
     Fetch all PRs and their associated files using the GitHub token and repository URL.
 
     """
+    code = request.data.get("code")
+
+    if not code:
+        return Response(
+            {"error": "Authorization code not provided"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    # GitHub API Token Exchange
+    token_url = "https://github.com/login/oauth/access_token"
+    headers = {"Accept": "application/json"}
+    data = {
+        "client_id": GITHUB_CLIENT_ID,
+        "client_secret": GITHUB_CLIENT_SECRET,
+        "code": code,
+    }
+
+    response = requests.post(token_url, headers=headers, data=data)
+
+    if response.status_code == 200:
+        access_token = response.json().get("access_token")
+    else:
+        error = response.json().get("error", "Token exchange failed")
+        return Response(
+            {"error": error},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
     org_standards = request.FILES.get('orgFile')
     org_standards=load_documents_from_files(org_standards)
     request.session['org_file']=org_standards
-    token = request.data.get('token')
+    token = access_token
     request.session['token']=token
     print(token)
 

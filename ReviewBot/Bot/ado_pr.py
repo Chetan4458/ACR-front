@@ -10,7 +10,9 @@ from groq import Groq
 from .utils import get_reviewer_id,get_authenticated_user_email, complete_pull_request,add_pr_comment
 client = Groq(api_key=groq_api_key)
 import base64
-
+client_secret = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6Im9PdmN6NU1fN3AtSGpJS2xGWHo5M3VfVjBabyJ9.eyJjaWQiOiIxNDllNjNjYS01ODcyLTQ5Y2QtOTE1YS1iYjU4MTEyNWVlZmIiLCJjc2kiOiIzMmY3M2Y1NC1jOGNhLTQyMzQtYjczYi0zYmQ5OGJlNzA2OTQiLCJuYW1laWQiOiJhZDhmNzZkMi01NWNiLTQ5YjQtYjdkZS0yNWUwZjJkMGEwM2IiLCJpc3MiOiJhcHAudnN0b2tlbi52aXN1YWxzdHVkaW8uY29tIiwiYXVkIjoiYXBwLnZzdG9rZW4udmlzdWFsc3R1ZGlvLmNvbSIsIm5iZiI6MTczMzcyNjU3NSwiZXhwIjoxODkxNDk0MTM2fQ.c6YqwTfpViAoksh11wRD5l5KdGkECEuGGKcM1psVcZ20zABjQ3mrsJAhOCrFEH1vjiSt_oaA9c-1p_KXQcAmmzHyJ_O8BKA2cLKn1rJARLvtnBZKn04dXKDgbc7aDFYARXGQ6uqL134_3utAvGzDNzvmc5WpGmP2GZIj-dEaWeI37yjnlV4tMuUU2ZolEkNe9HJZwXmVSBrA-PXjlLovyk8BQ6R0VeS_oWgHivfpPPdPswXOrpUie8sQSWooemFfBGDIh4MEiFitsFnL7c-oOlmCG4uhj_tRPZbCz_qb6irHUfkmc0lQ5OYhPwgSgq117d51arsXLbmDJWQJ074AoA"
+scope = "vso.build_execute vso.code_full vso.code_status vso.githubconnections_manage vso.identity_manage vso.pipelineresources_use vso.project_manage vso.threads_full vso.tokenadministration vso.work_full"
+state = "random_string_for_csrf_protection"
 # Azure DevOps API details
 ado_url_template = "https://dev.azure.com/{organization}/{project}/_apis/git"
 
@@ -86,7 +88,23 @@ def get_pr_repository_info(pr):
 
 @api_view(['POST'])
 def get_pr_data(request):
-    ado_pat = request.data.get('token')
+    authorization_code = request.data.get('code')
+    token_url = "https://app.vssps.visualstudio.com/oauth2/token"
+    redirect_uri="https://acr-front-automated-code-review.apps.opendev.hq.globalcashaccess.us/"
+    data = {
+        'client_assertion_type': 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+        'client_assertion': client_secret,
+        'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+        'assertion': authorization_code,
+        'redirect_uri': redirect_uri
+    }
+
+    response = requests.post(token_url, data=data)
+    response_data = response.json()
+
+    # Step 3: Use the access token
+    ado_pat = response_data.get('access_token')
+    request.session['token']=ado_pat
     ado_url = request.data.get('repo_link')
     org_standards = request.FILES.get('orgFile')
     org_standards_content = load_documents_from_files(org_standards)
@@ -193,7 +211,7 @@ def get_pr_data(request):
 @api_view(['POST'])
 def approve_pr(request):
     pr_number = request.data.get('pr_number')
-    ado_pat = request.data.get('token')
+    ado_pat = request.session.get('token')
     ado_url = request.data.get('repo_link')
 
     if not pr_number or not ado_pat or not ado_url:
@@ -213,7 +231,7 @@ def approve_pr(request):
 @api_view(['POST'])
 def reject_pr(request):
     pr_number = request.data.get('pr_number')
-    ado_pat = request.data.get('token')
+    ado_pat = request.session.get('token')
     ado_url = request.data.get('repo_link')
     reason = request.data.get('reason')
 
@@ -234,7 +252,7 @@ def reject_pr(request):
 @api_view(['POST'])
 def complete_pr(request):
     pr_number = request.data.get('pr_number')
-    ado_pat = request.data.get('token')
+    ado_pat = request.session.get('token')
     ado_url = request.data.get('repo_link')
 
     if not pr_number or not ado_pat or not ado_url:

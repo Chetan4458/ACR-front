@@ -200,8 +200,7 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const AdoPRReviewComponent = ({ orgFile }) => {
-  const [token, setToken] = useState("");
+const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -218,7 +217,6 @@ const AdoPRReviewComponent = ({ orgFile }) => {
     try {
       const response = await axios.post("/api/review/approve-ado-pr/", {
         pr_number: prNumber,
-        token,
         repo_link: repoLink,
       });
       alert(response.data.detail);
@@ -235,7 +233,6 @@ const AdoPRReviewComponent = ({ orgFile }) => {
     try {
       const response = await axios.post("/api/review/reject-pr/", {
         pr_number: prNumber,
-        token,
         repo_link: repoLink,
         reason,
       });
@@ -250,7 +247,6 @@ const AdoPRReviewComponent = ({ orgFile }) => {
     try {
       const response = await axios.post("/api/review/complete-pr/", {
         pr_number: prNumber,
-        token,
         repo_link: repoLink,
       });
       alert(response.data.detail);
@@ -265,7 +261,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append("token", token);
+      formData.append("code", adoauthcode);
       formData.append("repo_link", repoLink);
       formData.append("orgFile", orgFile);
   
@@ -294,7 +290,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
       setLoading(false);
       setShowSidebar(true); // Show sidebar
     }
-  }, [token, orgFile, repoLink]);
+  }, [orgFile, repoLink]);
   
 
  
@@ -355,16 +351,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
      
       <form onSubmit={handleSubmit} className="pr-form">
         <div className="form-container">
-          <div className="textbox">
-            <label>ADO Token</label>
-            <input
-              type="password"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              placeholder="Enter GitHub token"
-              required
-            />
-          </div>
+         
           <div className="textbox">
             <label>Repository Link</label>
             <input

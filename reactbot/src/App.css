@@ -4,13 +4,13 @@
   padding: 0;
   box-sizing: border-box;
 }
-
+ 
 body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.5;
-
+ 
 }
-
+ 
 /* App Container */
 .App {
   font-family: Arial, Helvetica, sans-serif;
@@ -18,7 +18,7 @@ body {
   background-color: white;
   /* min-height: 100vh; */
 }
-
+ 
 /* Navbar styles */
 .navbar {
   display: flex;
@@ -32,42 +32,42 @@ body {
   padding: 15px 40px;
   background-color: #24135f;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-
+ 
   /* border: 4px solid #1d4ed8; */
 }
-
+ 
 /* Logo styling */
 .navbar .logo {
   display: flex;
   justify-content: flex-start;
   align-items: center;
 }
-
+ 
 .navbar .logo img {
   height: 70px;
   width: auto;
 }
-
+ 
 /* Navbar title styling (centered) */
 .navbar-title {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
 }
-
+ 
 .navbar-title h1 {
   font-size: 40px;
   color: #fff;
   font-weight: bolder;
 }
-
+ 
 /* Navigation links container */
 .nav-links {
   display: flex;
   align-items: center; /* Align vertically */
   margin-left: 70px;
 }
-
+ 
 .nav-links ul {
   display: flex;
   gap: 5px;
@@ -75,7 +75,7 @@ body {
   padding: 0;
   margin: 0;
 }
-
+ 
 /* Navigation links */
 .nav-links a {
   display: inline-flex;
@@ -92,19 +92,19 @@ body {
   height: 50px; /* Set a fixed height for uniform size */
   transition: background-color 0.3s, border-color 0.3s, transform 0.2s;
 }
-
+ 
 .nav-links a:hover {
   background-color: #24135f;
   border-color: #24135f;
   transform: scale(1.08);
   text-decoration: none;
 }
-
+ 
 .nav-links a.active {
   background-color: #24135f;
   border-color: #24135f;
 }
-
+ 
 /* Home content section */
 .home-content {
   padding: 50px 30px;
@@ -115,17 +115,44 @@ body {
   max-width: 1200px;
   margin: 150px auto;
 }
-
+ 
 .home-content h1 {
   font-size: 3rem;
   color: #24135f;
   margin-bottom: 25px;
   font-weight: 700;
 }
-
+ 
 .home-content p {
   font-size: 1.2rem;
   color: #444;
   line-height: 1.8;
   margin-bottom: 15px;
+}
+.github-icon {
+  width: 17px;  /* Adjust the size as needed */
+  height: 17px;
+  margin-left: 7px;  /* Space between the icon and the text */
+}
+.success-message {
+  background-color: #d4edda; /* Soft green background */
+  color: #155724; /* Dark green text for contrast */
+  border: 1px solid #c3e6cb; /* Light green border */
+  padding: 5px; /* Add some space inside the box */
+  border-radius: 8px; /* Rounded corners */
+  max-width: fit-content;
+  text-align: center;
+  margin: 10px auto; /* Horizontally center the message */
+  font-family: 'Arial', sans-serif; /* Clean font */
+  font-size: 16px; /* Slightly larger text */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex; /* Flexbox for alignment */
+  align-items: center; /* Vertically center items */
+  gap: 10px; /* Space between icon and text */
+}
+ 
+ 
+.success-message .success-icon {
+  font-size: 24px; /* Slightly larger icon */
+  color: #155724; /* Same color as text */
 }

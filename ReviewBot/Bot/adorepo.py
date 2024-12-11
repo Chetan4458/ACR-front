@@ -15,7 +15,22 @@ import base64,requests
 def ado_repo(request):
     try:
         org_standards = request.FILES.get('org_file')
-        ado_pat = request.data.get('pat')
+        authorization_code = request.data.get('code')
+        token_url = "https://app.vssps.visualstudio.com/oauth2/token"
+        redirect_uri="https://acr-front-automated-code-review.apps.opendev.hq.globalcashaccess.us/"
+        data = {
+            'client_assertion_type': 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+            'client_assertion': client_secret,
+            'grant_type': 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            'assertion': authorization_code,
+            'redirect_uri': redirect_uri
+        }
+
+        response = requests.post(token_url, data=data)
+        response_data = response.json()
+
+        # Step 3: Use the access token
+        ado_pat = response_data.get('access_token')
         ado_url = request.data.get('url')
 
         if not (org_standards and ado_pat and ado_url) :
@@ -83,14 +98,3 @@ def ado_repo(request):
         # Capture and send the full traceback
         full_error = traceback.format_exc()
         return JsonResponse({'error': str(e), 'traceback': full_error}, status=500)
-
-
-@api_view(['GET'])
-def get_file_review(request):
-    # Retrieve reviews data from the session
-    reviews_data = request.session.get('reviews_data', [])
-
-    if not reviews_data:
-        return JsonResponse({'error': 'No review data found'}, status=404)
-
-    return JsonResponse(reviews_data, safe=False)

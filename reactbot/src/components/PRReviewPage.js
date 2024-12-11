@@ -22,6 +22,7 @@ const parseText = (text) => {
   return { __html: formattedText };
 };
 
+
 const TabContent = React.memo(({ activeTab, sFile }) => {
   const content = useMemo(() => {
     if (!sFile) return "Select a file to view details.";
@@ -200,7 +201,7 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const PRReviewComponent = ({ orgFile }) => {
+const PRReviewComponent = ({ orgFile, authcode }) => {
   const [token, setToken] = useState("");
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
@@ -218,7 +219,8 @@ const PRReviewComponent = ({ orgFile }) => {
     try {
       setLoading(true);
       const formData = new FormData();
-      formData.append('token', token);
+      console.log('auth code', authcode);
+      formData.append('code', authcode);
       formData.append('repo_link', repoLink);
       formData.append('orgFile', orgFile); // Attach the file
 
@@ -316,16 +318,6 @@ const PRReviewComponent = ({ orgFile }) => {
      
       <form onSubmit={handleSubmit} className="pr-form">
         <div className="form-container">
-          <div className="textbox">
-            <label>GitHub Token</label>
-            <input
-              type="password"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              placeholder="Enter GitHub token"
-              required
-            />
-          </div>
           <div className="textbox">
             <label>Repository Link</label>
             <input
