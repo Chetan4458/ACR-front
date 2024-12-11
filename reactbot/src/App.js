@@ -10,7 +10,7 @@ import axios from "axios";
  
 import './App.css';
  
-axios.defaults.baseURL = 'http://localhost:8000'; // Change to your backend URL
+axios.defaults.baseURL = 'https://acr-back-automated-code-review.apps.opendev.hq.globalcashaccess.us';
 axios.defaults.withCredentials = true;
  
 const App = () => {
