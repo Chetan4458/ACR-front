@@ -18,8 +18,7 @@ const App = () => {
   const [orgStdFile, setOrgStdFile] = useState(null); // File state
   const [errorMessage, setErrorMessage] = useState(''); // Error feedback
   const [successMessage, setSuccessMessage] = useState(''); // Success feedback
-  const { authcode, updateAuthcode, adoauthcode, updateAdoAuthcode } = useAuth(); // Use context
-
+  const { authcode, updateAuthcode, adoauthcode, updateAdoAuthcode } = useAuth() || {};
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
   
   const [adoisLoggedIn, setadoIsLoggedIn] = useState(false); // Track login status
