@@ -201,7 +201,7 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const PRReviewComponent = ({ orgFile }) => {
+const PRReviewComponent = ({ orgFile, authcode }) => {
   const [token, setToken] = useState("");
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
@@ -213,15 +213,12 @@ const PRReviewComponent = ({ orgFile }) => {
   const [activeTab, setActiveTab] = useState("view");
   const [showSidebar, setShowSidebar] = useState(false);
   const [fileDetails, setFileDetails] = useState({}); // State to store file details for all files in all PRs
-  const [authcode,setauthcode]=useState(null);
 
   // Function to fetch data when "Process PRs" is clicked
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       const formData = new FormData();
-      const ac=localStorage.getItem('code')
-      setauthcode(ac)
       formData.append('code', authcode);
       formData.append('repo_link', repoLink);
       formData.append('orgFile', orgFile); // Attach the file
