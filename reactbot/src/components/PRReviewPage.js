@@ -244,7 +244,7 @@ const PRReviewComponent = ({ orgFile, authcode }) => {
       setFileDetails(fileDetailsMap); // Store file details for each file in each PR
       setError("");
     } catch (err) {
-      setError(err.response?.data?.detail || "An error occurred while fetching PRs.");
+      setError(err.response?.data?.detail);
     } finally {
       setLoading(false);
       setShowSidebar(true);
