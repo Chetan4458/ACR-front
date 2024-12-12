@@ -200,7 +200,7 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
+const AdoPRReviewComponent = ({ orgFile }) => {
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -261,6 +261,7 @@ const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
     try {
       setLoading(true);
       const formData = new FormData();
+      adoauthcode=localStorage.getItem('ado_code')
       formData.append("code", adoauthcode);
       formData.append("repo_link", repoLink);
       formData.append("orgFile", orgFile);
