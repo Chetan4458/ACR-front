@@ -85,7 +85,6 @@ const App = () => {
  
   return (
     <Router>
-    <AuthProvider>
       <div className="App">
         <header className="navbar">
           <div className="logo">
@@ -229,7 +228,6 @@ const App = () => {
           <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile} adoauthcode={adoauthcode}/>} />
         </Routes>
       </div>
-    </AuthProvider>
     </Router>
   );
 };
