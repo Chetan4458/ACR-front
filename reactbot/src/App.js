@@ -7,7 +7,7 @@ import AdoRepoReviewPage from './components/AdoRepoReviewPage';
 import AdoPRReviewPage from './components/AdoPRReviewPage';
 import picture1 from './Picture1.png';
 import axios from "axios";
-import { AuthProvider, useAuth } from './commponents/AuthContext'; // Import your AuthContext
+import { AuthProvider,useAuth } from './components/AuthContext';
  
 import './App.css';
  
