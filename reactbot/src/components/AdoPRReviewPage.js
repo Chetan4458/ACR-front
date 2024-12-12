@@ -212,6 +212,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [fileDetails, setFileDetails] = useState({}); // State to store file details for all files in all PRs
   const [rejectReason, setRejectReason] = useState("");
+  const { adoauthcode } = useAuth(); // Access adoauthcode from context
 
   const handleApprovePR = async (prNumber) => {
     try {
@@ -261,7 +262,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
     try {
       setLoading(true);
       const formData = new FormData();
-      const adoauthcode=localStorage.getItem('ado_code')
+      
       formData.append("code", adoauthcode);
       formData.append("repo_link", repoLink);
       formData.append("orgFile", orgFile);
