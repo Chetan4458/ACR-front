@@ -244,12 +244,7 @@ const PRReviewComponent = ({ orgFile, authcode }) => {
       setFileDetails(fileDetailsMap); // Store file details for each file in each PR
       setError("");
     } catch (err) {
-      console.error("Detailed error:", err); // Log the complete error object
-      const errorMessage =
-        err.response?.data?.detail || // API-specific error message
-        err.message || // General error message
-        "An unexpected error occurred."; // Fallback message
-      setError(errorMessage); // Update the error state
+      setError(err.response?.data?.detail || "An error occurred while fetching PRs.");
     } finally {
       setLoading(false);
       setShowSidebar(true);
