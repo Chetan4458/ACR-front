@@ -257,7 +257,7 @@ const PRReviewComponent = ({ orgFile }) => {
       setLoading(false);
       setShowSidebar(true);
     }
-  }, [token, orgFile, repoLink]);
+  }, [orgFile, repoLink]);
 
   const approvePR = useCallback(async (prNumber) => {
     try {
