@@ -181,7 +181,7 @@ const TabContent = React.memo(({ activeTab, reviewResults, selectedFile }) => {
   return <div className="tab-content">{content}</div>;
 });
 
-const AdoRepoReview = ({ orgFile }) => {
+const AdoRepoReview = ({ orgFile, adoauthcode }) => {
   const [pat, setpat] = useState("");
   const [url, seturl] = useState("");
   const [error, setError] = useState(null);
@@ -205,7 +205,6 @@ const AdoRepoReview = ({ orgFile }) => {
     setReviewResults(null);
 
     const formData = new FormData();
-    const adoauthcode=localStorage.getItem('ado_code')
     formData.append("code", adoauthcode);
     formData.append("url", url);
     formData.append("org_file", orgFile);
