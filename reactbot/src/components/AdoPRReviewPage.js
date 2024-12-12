@@ -4,6 +4,8 @@ import "./style.css";
 import DiffViewer from 'react-diff-viewer';
 axios.defaults.withCredentials = true;
 import ErrorTabs from './ErrorTabs';
+import { useAuth } from './AuthContext';
+
 const parseText = (text) => {
   if (!text) return text;
  
