@@ -294,7 +294,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
       setLoading(false);
       setShowSidebar(true); // Show sidebar
     }
-  }, [orgFile, repoLink]);
+  }, [adoauthcode,orgFile, repoLink]);
   
 
  
