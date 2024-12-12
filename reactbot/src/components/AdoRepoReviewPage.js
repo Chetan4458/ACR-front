@@ -205,7 +205,7 @@ const AdoRepoReview = ({ orgFile }) => {
     setReviewResults(null);
 
     const formData = new FormData();
-    adoauthcode=localStorage.getItem('ado_code')
+    const adoauthcode=localStorage.getItem('ado_code')
     formData.append("code", adoauthcode);
     formData.append("url", url);
     formData.append("org_file", orgFile);
