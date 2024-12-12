@@ -202,7 +202,7 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const AdoPRReviewComponent = ({ orgFile }) => {
+const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -214,7 +214,6 @@ const AdoPRReviewComponent = ({ orgFile }) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [fileDetails, setFileDetails] = useState({}); // State to store file details for all files in all PRs
   const [rejectReason, setRejectReason] = useState("");
-  const { adoauthcode } = useAuth(); // Access adoauthcode from context
 
   const handleApprovePR = async (prNumber) => {
     try {
