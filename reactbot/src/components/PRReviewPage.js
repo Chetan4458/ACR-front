@@ -201,7 +201,7 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const PRReviewComponent = ({ orgFile, authcode }) => {
+const PRReviewComponent = ({ orgFile }) => {
   const [token, setToken] = useState("");
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
@@ -220,6 +220,7 @@ const PRReviewComponent = ({ orgFile, authcode }) => {
       setLoading(true);
       const formData = new FormData();
       console.log('auth code', authcode);
+      authcode=localStorage.getItem('code')
       formData.append('code', authcode);
       formData.append('repo_link', repoLink);
       formData.append('orgFile', orgFile); // Attach the file
