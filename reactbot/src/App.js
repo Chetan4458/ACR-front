@@ -7,6 +7,7 @@ import AdoRepoReviewPage from './components/AdoRepoReviewPage';
 import AdoPRReviewPage from './components/AdoPRReviewPage';
 import picture1 from './Picture1.png';
 import axios from "axios";
+import { AuthProvider, useAuth } from './commponents/AuthContext'; // Import your AuthContext
  
 import './App.css';
  
@@ -17,9 +18,10 @@ const App = () => {
   const [orgStdFile, setOrgStdFile] = useState(null); // File state
   const [errorMessage, setErrorMessage] = useState(''); // Error feedback
   const [successMessage, setSuccessMessage] = useState(''); // Success feedback
-  const [authcode, setauthcode] = useState(null);
+  const { authcode, updateAuthcode, adoauthcode, updateAdoAuthcode } = useAuth(); // Use context
+
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
-  const [adoauthcode, setadoauthcode] = useState(null);
+  
   const [adoisLoggedIn, setadoIsLoggedIn] = useState(false); // Track login status
  
   const handleGitHubLoginClick = () => {
@@ -54,21 +56,18 @@ const App = () => {
   
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
-    localStorage.setItem('code', code);
-    const ado_code= new URLSearchParams(window.location.search).get("code");
-    localStorage.setItem('ado_code', ado_code);
-    const state=new URLSearchParams(window.location.search).get("state")
-    if (code) {
-      setauthcode(code);
+    const ado_code = new URLSearchParams(window.location.search).get("code");
+    const state = new URLSearchParams(window.location.search).get("state");
+
+    if (code && !state) {
+      updateAuthcode(code);
       setIsLoggedIn(true); // User is logged in
-      // setSuccessMessage("You have successfully logged in with GitHub!"); // Set success message
     }
     if (ado_code && state) {
-      setadoauthcode(ado_code);
+      updateAdoAuthcode(ado_code);
       setadoIsLoggedIn(true); // User is logged in
-      // setSuccessMessage("You have successfully logged in with GitHub!"); // Set success message
     }
-  }, []);
+  }, [updateAuthcode, updateAdoAuthcode]);
  
   const handleOrgStdFileChange = (e) => {
     const file = e.target.files[0];
