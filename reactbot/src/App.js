@@ -7,7 +7,6 @@ import AdoRepoReviewPage from './components/AdoRepoReviewPage';
 import AdoPRReviewPage from './components/AdoPRReviewPage';
 import picture1 from './Picture1.png';
 import axios from "axios";
-import { AuthProvider,useAuth } from './components/AuthContext';
  
 import './App.css';
  
@@ -18,9 +17,10 @@ const App = () => {
   const [orgStdFile, setOrgStdFile] = useState(null); // File state
   const [errorMessage, setErrorMessage] = useState(''); // Error feedback
   const [successMessage, setSuccessMessage] = useState(''); // Success feedback
-  const { authcode, updateAuthcode, adoauthcode, updateAdoAuthcode } = useAuth() || {};
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
-  
+  const [authcode, setauthcode] = useState(null);
+  const [adoauthcode, setadoauthcode] = useState(null);
+
   const [adoisLoggedIn, setadoIsLoggedIn] = useState(false); // Track login status
  
   const handleGitHubLoginClick = () => {
@@ -59,14 +59,14 @@ const App = () => {
     const state = new URLSearchParams(window.location.search).get("state");
 
     if (code && !state) {
-      updateAuthcode(code);
+      setauthcode(code);
       setIsLoggedIn(true); // User is logged in
     }
     if (ado_code && state) {
-      updateAdoAuthcode(ado_code);
+      setadoauthcode(ado_code);
       setadoIsLoggedIn(true); // User is logged in
     }
-  }, [updateAuthcode, updateAdoAuthcode]);
+  }, []);
  
   const handleOrgStdFileChange = (e) => {
     const file = e.target.files[0];
@@ -224,9 +224,9 @@ const App = () => {
           />
           <Route path="/single-file-review" element={<SingleFileReviewPage selectedOrgFile={orgStdFile} />} />
           <Route path="/folder-repo-review" element={<FolderOrRepoReviewPage orgFile={orgStdFile} />} />
-          <Route path="/pr-review" element={<PRReviewPage orgFile={orgStdFile} />} />
-          <Route path="/ado-repo" element={<AdoRepoReviewPage orgFile={orgStdFile} />} />
-          <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile}/>} />
+          <Route path="/pr-review" element={<PRReviewPage orgFile={orgStdFile} authcode={authcode}  />} />
+          <Route path="/ado-repo" element={<AdoRepoReviewPage orgFile={orgStdFile} adoauthcode={adoauthcode}/>} />
+          <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile} adoauthcode={adoauthcode}/>} />
         </Routes>
       </div>
     </AuthProvider>
