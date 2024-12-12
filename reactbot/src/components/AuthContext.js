@@ -4,7 +4,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [authcode, setAuthcode] = useState(localStorage.getItem('authcode') || null);
-  const [adoauthcode, setAdoAuthcode] = useState(localStorage.getItem('adoauthcode') || null);
+ const [adoauthcode, setAdoAuthcode] = useState(localStorage.getItem('ado_code') || null);
 
   const updateAuthcode = (code) => {
     setAuthcode(code);
@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateAdoAuthcode = (code) => {
     setAdoAuthcode(code);
-    localStorage.setItem('adoauthcode', code);
+    localStorage.setItem('ado_code', code);
   };
 
   return (
