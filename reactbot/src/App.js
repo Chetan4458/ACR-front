@@ -54,7 +54,9 @@ const App = () => {
   
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
+    localStorage.setItem('code', code);
     const ado_code= new URLSearchParams(window.location.search).get("code");
+    localStorage.setItem('ado_code', ado_code);
     const state=new URLSearchParams(window.location.search).get("state")
     if (code) {
       setauthcode(code);
@@ -223,9 +225,9 @@ const App = () => {
           />
           <Route path="/single-file-review" element={<SingleFileReviewPage selectedOrgFile={orgStdFile} />} />
           <Route path="/folder-repo-review" element={<FolderOrRepoReviewPage orgFile={orgStdFile} />} />
-          <Route path="/pr-review" element={<PRReviewPage orgFile={orgStdFile} authcode={authcode} />} />
-          <Route path="/ado-repo" element={<AdoRepoReviewPage orgFile={orgStdFile} adoauthcode={adoauthcode} />} />
-          <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile} adoauthcode={adoauthcode} />} />
+          <Route path="/pr-review" element={<PRReviewPage orgFile={orgStdFile} />} />
+          <Route path="/ado-repo" element={<AdoRepoReviewPage orgFile={orgStdFile} />} />
+          <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile}/>} />
         </Routes>
       </div>
     </Router>
