@@ -261,7 +261,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
     try {
       setLoading(true);
       const formData = new FormData();
-      adoauthcode=localStorage.getItem('ado_code')
+      const adoauthcode=localStorage.getItem('ado_code')
       formData.append("code", adoauthcode);
       formData.append("repo_link", repoLink);
       formData.append("orgFile", orgFile);
