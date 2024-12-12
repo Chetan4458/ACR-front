@@ -213,6 +213,7 @@ const PRReviewComponent = ({ orgFile }) => {
   const [activeTab, setActiveTab] = useState("view");
   const [showSidebar, setShowSidebar] = useState(false);
   const [fileDetails, setFileDetails] = useState({}); // State to store file details for all files in all PRs
+  const authcode=localStorage.getItem('code')
 
   // Function to fetch data when "Process PRs" is clicked
   const fetchData = useCallback(async () => {
@@ -220,7 +221,7 @@ const PRReviewComponent = ({ orgFile }) => {
       setLoading(true);
       const formData = new FormData();
       console.log('auth code', authcode);
-      authcode=localStorage.getItem('code')
+      
       formData.append('code', authcode);
       formData.append('repo_link', repoLink);
       formData.append('orgFile', orgFile); // Attach the file
