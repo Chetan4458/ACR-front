@@ -188,7 +188,7 @@ const App = () => {
  
                
                  {(isLoggedIn || adoisLoggedIn) && (
-                <div className="home-content">
+                <div className="tab-content">
                 <p>Please upload Organization standards to proceed.</p>
                 <div className="file-upload-wrapper">
                  
