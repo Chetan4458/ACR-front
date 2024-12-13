@@ -215,6 +215,7 @@ const AdoRepoReview = ({ orgFile, adoauthcode }) => {
 });
       if (response.data && Array.isArray(response.data.reviews_data)) {
         setReviewResults(response.data.reviews_data);
+        console.log(reviewResults);
       } else {
         setError("Unexpected response format.");
       }
