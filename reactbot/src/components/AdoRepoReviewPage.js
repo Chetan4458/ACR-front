@@ -271,18 +271,24 @@ const AdoRepoReview = ({ orgFile, adoauthcode }) => {
         {showSidebar && (
           <div className={`sidebar-pr ${showSidebar ? "visible" : ""}`}>
             <h2>Files</h2>
-            <ul>
-              {reviewResults.map((review) => (
-                <FileItem
-                  key={review.file_path}
-                  file={review.file_path}
-                  selectedFile={selectedFile}
-                  activeTab={activeTab}
-                  handleFileClick={handleFileClick}
-                  handleTabClick={handleTabClick}
-                />
-              ))}
-            </ul>
+            {reviewResults.length === 0 && error ? (
+              <div className="error-message">
+                <p>{error}</p>
+              </div>
+            ) : (
+              <ul>
+                {reviewResults.map((review) => (
+                  <FileItem
+                    key={review.file_path}
+                    file={review.file_path}
+                    selectedFile={selectedFile}
+                    activeTab={activeTab}
+                    handleFileClick={handleFileClick}
+                    handleTabClick={handleTabClick}
+                  />
+                ))}
+              </ul>
+            )}
           </div>
         )}
 
