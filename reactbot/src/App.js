@@ -130,7 +130,7 @@ const App = () => {
                 )}
  
                 {/* Conditional rendering for ADO links */}
-                {adoIsLoggedIn && (
+                {adoisLoggedIn && (
                   <>
                     <li>
                       <NavLink
