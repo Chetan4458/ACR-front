@@ -20,7 +20,7 @@ const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Track login status
   const [authcode, setauthcode] = useState(null);
   const [adoauthcode, setadoauthcode] = useState(null);
-
+ 
   const [adoisLoggedIn, setadoIsLoggedIn] = useState(false); // Track login status
  
   const handleGitHubLoginClick = () => {
@@ -46,18 +46,18 @@ const App = () => {
       scope: ado_scope,
       state: state
     });
-    
+   
     // Combine the base URL with the encoded parameters
     const adoAuthUrl = `${auth_url}?${params.toString()}`;
     // Redirect the user to ADO OAuth URL
     window.location.href = adoAuthUrl;
   };
-  
+ 
   useEffect(() => {
     const code = new URLSearchParams(window.location.search).get("code");
     const ado_code = new URLSearchParams(window.location.search).get("code");
     const state = new URLSearchParams(window.location.search).get("state");
-
+ 
     if (code && !state) {
       setauthcode(code);
       setIsLoggedIn(true); // User is logged in
@@ -79,7 +79,7 @@ const App = () => {
       setOrgStdFile(file);
       setErrorMessage('');
       setSuccessMessage(`File "${file.name}" uploaded successfully.\nNow choose a Review Type from the Navigation Bar above`);
-
+ 
     }
   };
  
@@ -99,23 +99,26 @@ const App = () => {
                 </NavLink>
               </li>
               {orgStdFile && (
-                <>
-                  <li>
-                    <NavLink
-                      to="/single-file-review"
-                      className={({ isActive }) => (isActive ? 'active' : '')}
-                    >
-                      Single File Review
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/folder-repo-review"
-                      className={({ isActive }) => (isActive ? 'active' : '')}
-                    >
-                      Folder or Repo Review
-                    </NavLink>
-                  </li>
+              <>
+                <li>
+                  <NavLink
+                    to="/single-file-review"
+                    className={({ isActive }) => (isActive ? 'active' : '')}
+                  >
+                    Single File Review
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/folder-repo-review"
+                    className={({ isActive }) => (isActive ? 'active' : '')}
+                  >
+                    Folder or Repo Review
+                  </NavLink>
+                </li>
+ 
+                {/* Conditional rendering for PR Review */}
+                {isLoggedIn && (
                   <li>
                     <NavLink
                       to="/pr-review"
@@ -124,24 +127,32 @@ const App = () => {
                       PR Review
                     </NavLink>
                   </li>
-                  <li>
-                    <NavLink
-                      to="/ado-repo"
-                      className={({ isActive }) => (isActive ? 'active' : '')}
-                    >
-                      ADO Repo Review
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink
-                      to="/ado-pr"
-                      className={({ isActive }) => (isActive ? 'active' : '')}
-                    >
-                      ADO PR Review
-                    </NavLink>
-                  </li>
-                </>
-              )}
+                )}
+ 
+                {/* Conditional rendering for ADO links */}
+                {adoIsLoggedIn && (
+                  <>
+                    <li>
+                      <NavLink
+                        to="/ado-repo"
+                        className={({ isActive }) => (isActive ? 'active' : '')}
+                      >
+                        ADO Repo Review
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to="/ado-pr"
+                        className={({ isActive }) => (isActive ? 'active' : '')}
+                      >
+                        ADO PR Review
+                      </NavLink>
+                    </li>
+                  </>
+                )}
+              </>
+            )}
+ 
             </ul>
           </nav>
         </header>
@@ -193,7 +204,7 @@ const App = () => {
                 <div className="file-upload-wrapper">
                  
                   <div className="file-upload">
-                  
+                 
                     <label htmlFor="orgStdFile">Organization Code Standard:</label>
                     <input
                       type="file"
