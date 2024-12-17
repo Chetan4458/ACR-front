@@ -347,9 +347,9 @@ const App = () => {
           />
           <Route path="/single-file-review" element={<SingleFileReviewPage selectedOrgFile={orgStdFile} />} />
           <Route path="/folder-repo-review" element={<FolderOrRepoReviewPage orgFile={orgStdFile} />} />
-          <Route path="/pr-review" element={<PRReviewPage orgFile={orgStdFile} />} />
-          <Route path="/ado-repo" element={<AdoRepoReviewPage orgFile={orgStdFile} />} />
-          <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile}/>} />
+          <Route path="/pr-review" element={<PRReviewPage orgFile={orgStdFile} authcode={authcode} />} />
+          <Route path="/ado-repo" element={<AdoRepoReviewPage orgFile={orgStdFile} adoauthcode={adoauthcode}/>} />
+          <Route path="/ado-pr" element={<AdoPRReviewPage orgFile={orgStdFile}adoauthcode={adoauthcode}/>} />
         </Routes>
       </div>
     </Router>
