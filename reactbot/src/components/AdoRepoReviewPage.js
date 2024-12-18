@@ -181,7 +181,7 @@ const TabContent = React.memo(({ activeTab, reviewResults, selectedFile }) => {
   return <div className="tab-content">{content}</div>;
 });
 
-const AdoRepoReview = ({ orgFile, adoauthcode }) => {
+const AdoRepoReview = ({ orgFile }) => {
   const [pat, setpat] = useState("");
   const [url, seturl] = useState("");
   const [error, setError] = useState(null);
@@ -203,9 +203,7 @@ const AdoRepoReview = ({ orgFile, adoauthcode }) => {
     setShowSidebar(false);
     setLoading(true);
     setReviewResults(null);
-
     const formData = new FormData();
-    formData.append("code", adoauthcode);
     formData.append("url", url);
     formData.append("org_file", orgFile);
 
@@ -213,7 +211,6 @@ const AdoRepoReview = ({ orgFile, adoauthcode }) => {
       const response = await axios.post("/api/review/ado-repo/", formData);
       if (response.data && Array.isArray(response.data.reviews_data)) {
         setReviewResults(response.data.reviews_data);
-        console.log(reviewResults);
       } else {
         setError("Unexpected response format.");
       }
@@ -271,24 +268,18 @@ const AdoRepoReview = ({ orgFile, adoauthcode }) => {
         {showSidebar && (
           <div className={`sidebar-pr ${showSidebar ? "visible" : ""}`}>
             <h2>Files</h2>
-            {reviewResults.length === 0 && error ? (
-              <div className="error-message">
-                <p>{error}</p>
-              </div>
-            ) : (
-              <ul>
-                {reviewResults.map((review) => (
-                  <FileItem
-                    key={review.file_path}
-                    file={review.file_path}
-                    selectedFile={selectedFile}
-                    activeTab={activeTab}
-                    handleFileClick={handleFileClick}
-                    handleTabClick={handleTabClick}
-                  />
-                ))}
-              </ul>
-            )}
+            <ul>
+              {reviewResults.map((review) => (
+                <FileItem
+                  key={review.file_path}
+                  file={review.file_path}
+                  selectedFile={selectedFile}
+                  activeTab={activeTab}
+                  handleFileClick={handleFileClick}
+                  handleTabClick={handleTabClick}
+                />
+              ))}
+            </ul>
           </div>
         )}
 
