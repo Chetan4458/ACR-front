@@ -4,7 +4,6 @@ import "./style.css";
 import DiffViewer from 'react-diff-viewer';
 axios.defaults.withCredentials = true;
 import ErrorTabs from './ErrorTabs';
-
 const parseText = (text) => {
   if (!text) return text;
  
@@ -201,7 +200,8 @@ const FileItem = React.memo(({ file, index, selectedFile, activeTab, handleFileC
   </li>
 ));
 
-const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
+const AdoPRReviewComponent = ({ orgFile }) => {
+  const [token, setToken] = useState("");
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -262,8 +262,6 @@ const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
     try {
       setLoading(true);
       const formData = new FormData();
-      
-      formData.append("code", adoauthcode);
       formData.append("repo_link", repoLink);
       formData.append("orgFile", orgFile);
   
@@ -292,7 +290,7 @@ const AdoPRReviewComponent = ({ orgFile, adoauthcode }) => {
       setLoading(false);
       setShowSidebar(true); // Show sidebar
     }
-  }, [adoauthcode,orgFile, repoLink]);
+  }, [orgFile, repoLink]);
   
 
  
