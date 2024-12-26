@@ -64,10 +64,10 @@ const ReviewSingleFile = ({ selectedOrgFile }) => {
     formData.append('newfile', selectedNewFile);
     formData.append('oldfile', selectedOldFile);
     formData.append('org_standards', selectedOrgFile);
-    formData.append('model_type', modelType);
+    // formData.append('model_type', modelType);
     formData.append('review_option', reviewOption);
     // formData.append('review_type', reviewType);
-    formData.append('lang', lang);
+    // formData.append('lang', lang);
  
     try {
       const response = await axios.post('/api/review/single-file/', formData);
@@ -288,11 +288,6 @@ return (
 
         {/* Model and Review Type Selection */}
         <div className="select-container">
-          <label>Model Type</label>
-          <select value={modelType} onChange={handleModelTypeChange}>
-            <option value="llama3-8b-8192">Llama3-8B-8192</option>
-            <option value="llama3-70b-8192">Llama3-70b-8192</option>
-          </select>
           {selectedOldFile && (
             <div>
               <label>Review Option</label>
