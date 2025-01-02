@@ -204,6 +204,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
   const [token, setToken] = useState("");
   const [repoLink, setRepoLink] = useState("");
   const [error, setError] = useState("");
+  const [compError,setcompError]=useState('');
   const [loading, setLoading] = useState(false);
   const [prList, setPrList] = useState([]);
   const [expandedPR, setExpandedPR] = useState(null);
@@ -224,6 +225,8 @@ const AdoPRReviewComponent = ({ orgFile }) => {
       // setPrList((prevPrs) => prevPrs.filter((pr) => pr.number !== prNumber));
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to approve PR.");
+      setcompError('');
+      console.log(compError)
     }
   };
   
@@ -253,7 +256,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
       alert(response.data.detail);
       setPrList((prevPrs) => prevPrs.filter((pr) => pr.number !== prNumber));
     } catch (err) {
-      setError(err.response?.data?.detail || "Failed to complete PR.");
+      setcompError(err.response?.data?.detail || "Failed to complete PR.");
     }
   };
   
@@ -369,6 +372,7 @@ const AdoPRReviewComponent = ({ orgFile }) => {
           </div>
           {loading && <div className="loading">Loading...</div>}
           {error && <div className="error-message">{error}</div>}
+          {compError && <div className="error-message">{compError}</div>}
         </div>
       </form>
 
